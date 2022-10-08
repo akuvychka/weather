@@ -5,7 +5,7 @@ module ThirdParty
   class BaseApiRequestService
     attr_reader :api_url, :command, :params
 
-    def initialize(api_url, command, params)
+    def initialize(api_url, command, params = nil)
       @api_url = api_url
       @command = command
       @params = params
@@ -19,10 +19,10 @@ module ThirdParty
 
     def execute_get
       res = RestClient.get request_path, request_get_headers
-      Rails.logger.info "[REQUEST]: #{request_path} => #{params.to_json} [RESPONSE]: #{res}"
+      Rails.logger.info "[REQUEST]: #{request_path} => #{params&.to_json} [RESPONSE]: #{res}"
       JSON.parse(res.body)
     rescue RestClient::ExceptionWithResponse => e
-      Rails.logger.error "[REQUEST ERROR]: #{request_path} => #{params.to_json} [ERROR]: #{e.response}"
+      Rails.logger.error "[REQUEST ERROR]: #{request_path} => #{params&.to_json} [ERROR]: #{e.response}"
     end
 
     def header

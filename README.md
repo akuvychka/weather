@@ -16,15 +16,26 @@ Application will be accessible via url:
 ### Open Street Map
 Service that provides location search by address.
 
-base request looks like: `https://nominatim.openstreetmap.org/search?q=[address]&format=[response format]`
+request example: https://nominatim.openstreetmap.org/search?q=Texas&format=json
 
 link for api documentation: https://nominatim.org/release-docs/develop/api/Overview/
+
+### Meteomatics
+
+Service that provides weather data
+
+request example: https://api.meteomatics.com/2022-10-08T00:00:00Z/t_2m:C/52.520551,13.461804/json
+
+link for api documentation: https://www.meteomatics.com/en/api/getting-started/
 
 ## App tests run
 
 ## App configuration
 ### Env parameters
 
-|       Parameter       |   Values    |                             Usage                             |
-|:---------------------:|:-----------:|:-------------------------------------------------------------:|
-| LOCATION_SERVICE_API  | string, url | Url for the third party service that provides location search |
+| Parameter                |   Values    | Usage                                                         |
+|:-------------------------|:-----------:|:--------------------------------------------------------------|
+| LOCATION_SERVICE_API     | string, url | Url for the third party service that provides location search |
+| WEATHER_SERVICE_API      | string, url | Url for the third party service that provides weather data    |
+| WEATHER_SERVICE_USERNAME |   string    | Username for login into weather data provider                 |
+| WEATHER_SERVICE_PASSWORD |   string    | Password for login into weather data provider                 |

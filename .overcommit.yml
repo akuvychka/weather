@@ -22,6 +22,8 @@ PreCommit:
     exclude:
       - '**/Gemfile'
       - '**/config/**'
+      - '**/spec/**'
+      - '**/*_spec.rb'
 
   TrailingWhitespace:
     enabled: true

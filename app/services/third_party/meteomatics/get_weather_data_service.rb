@@ -21,7 +21,7 @@ module ThirdParty
       end
 
       def call
-        execute_get
+        ::ThirdParty::Meteomatics::WeatherData.new(execute_get)
       end
 
       private

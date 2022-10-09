@@ -32,7 +32,7 @@ module ThirdParty
 
       def requested_options
         if opts.blank?
-          return 't_2m:F,t_min_2m_24h:F,t_max_2m_24h:F,wind_dir_10m:d,wind_speed_10m:ms,relative_humidity_2m:p'
+          return 't_2m:F,t_min_2m_24h:F,t_max_2m_24h:F,wind_dir_2m:d,wind_speed_2m:mph,relative_humidity_2m:p'
         end
 
         opts

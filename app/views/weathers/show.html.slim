@@ -1,0 +1,91 @@
+javascript:
+    function formComplete () {
+        let form = document.getElementById('address-form');
+        let item = document.getElementById('address-input');
+        if (item.value.trim() !== '') {
+            getWeather(item.value.trim());
+            form.classList.add('need-validated');
+            form.classList.remove('was-validated');
+        } else {
+            form.classList.remove('need-validated');
+            form.classList.add('was-validated');
+        }
+    }
+
+    function getWeather(address) {
+        fetch(`/api/v1/weather?address=${address}`)
+            .then((response) => response.json())
+            .then((data) => {
+                let weatherForm = document.getElementById('weather-form');
+                let errorForm = document.getElementById('error-form');
+                if (data.success) {
+                    document.getElementById('current-temp').innerHTML = `${data.data['t_2m:F']}°F`;
+                    document.getElementById('min-temp').innerHTML = `${data.data['t_min_2m_24h:F']}°F`;
+                    document.getElementById('max-temp').innerHTML = `${data.data['t_max_2m_24h:F']}°F`;
+                    document.getElementById('humidity').innerHTML = `${data.data['relative_humidity_2m:p']}%`;
+                    document.getElementById('wind-speed').innerHTML = `${data.data['wind_speed_2m:mph']}mph`;
+                    document.getElementById('wind-direction').style.transform = `rotate(${data.data['wind_dir_2m:d']}deg)`;
+
+
+                    weatherForm.style.display = 'block';
+                    errorForm.style.display = 'none';
+                } else {
+                    document.getElementById('error-message').innerHTML = data.message;
+                    weatherForm.style.display = 'none';
+                    errorForm.style.display = 'block';
+                }
+
+            });
+    }
+
+
+div class="d-flex flex-column justify-content-center align-items-center mt-5"
+  div class="card mb-3" style="min-width:600px; max-width: 800px"
+    div class="card-header text-center"
+      .w-100.d-flex.font-weight-bold
+        | Fill address and submit to see the weather
+    .card-body
+      #address-form.form.need-validated
+        .form-group.w-100.p-1
+          |  Address*
+          div class="input-group mb-3"
+            input type="text" class='form-control invalid-email' placeholder='Address line, City, State, ZipCode' id="address-input" required=true invalid=true
+              div class="input-group-append"
+                button type='button' class='btn btn-outline-secondary' id="address-submit" onclick="formComplete();" Get weather
+      div.text-sm-left.text-danger
+        | *Keep attention that ZipCode is mandatory for input
+  div class="card mb-3 weather" style="min-width:600px; max-width: 800px; display:none" id='weather-form'
+    div class="card-header text-center"
+      .w-100.d-flex.font-weight-bold
+        | Weather for location:
+        #address-text.ml-1.font-weight-light.font-italic Flow
+    .card-body.d-flex
+      .card.mr-1
+        div class="card-header text-center" Temperature
+        .card-body
+          #current-temp.text-center 90F
+      .card.mr-1
+        div class="card-header text-center" Max Temp
+        .card-body
+          #max-temp.text-center 90F
+      .card.mr-1
+        div class="card-header text-center" Min Temp
+        .card-body
+          #min-temp.text-center 90F
+      .card.mr-1
+        div class="card-header text-center" Wind
+        .card-body
+          #wind-speed.text-center 15 m/s
+      .card.mr-1
+        div class="card-header text-center" Wind Direction
+        .card-body
+          #wind-direction.text-center ↑
+      .card.mr-1
+        div class="card-header text-center" Humidity
+        .card-body
+          #humidity.text-center 78%
+  div class="card mb-3 weather" style="min-width:600px; max-width: 800px; display:none" id='error-form'
+    div class="card-header text-center"
+      .w-100.d-flex.font-weight-bold Error
+    .card-body
+      #error-message.w-100 Something went wrong!

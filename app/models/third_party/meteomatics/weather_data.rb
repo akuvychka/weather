@@ -7,7 +7,7 @@ module ThirdParty
     class WeatherData
       # data example
       # {"t_2m:F"=>72.0, "t_min_2m_24h:F"=>59.8, "t_max_2m_24h:F"=>82.7,
-      # "wind_dir_10m:d"=>1.1, "wind_speed_10m:ms"=>3.3, "relative_humidity_2m:p"=>50.4}
+      # "wind_dir_2m:d"=>1.1, "wind_speed_2m:mph"=>3.3, "relative_humidity_2m:p"=>50.4}
 
       attr_reader :status, :data, :error_message
 

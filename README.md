@@ -28,14 +28,19 @@ request example: https://api.meteomatics.com/2022-10-08T00:00:00Z/t_2m:C/52.5205
 
 link for api documentation: https://www.meteomatics.com/en/api/getting-started/
 
+### Redis
+
+Install redis before run application and set connection url into config
+
 ## App tests run
 
 ## App configuration
 ### Env parameters
 
-| Parameter                |   Values    | Usage                                                         |
-|:-------------------------|:-----------:|:--------------------------------------------------------------|
-| LOCATION_SERVICE_API     | string, url | Url for the third party service that provides location search |
-| WEATHER_SERVICE_API      | string, url | Url for the third party service that provides weather data    |
-| WEATHER_SERVICE_USERNAME |   string    | Username for login into weather data provider                 |
-| WEATHER_SERVICE_PASSWORD |   string    | Password for login into weather data provider                 |
+| Parameter                |     Values      | Usage                                                         |
+|:-------------------------|:---------------:|:--------------------------------------------------------------|
+| LOCATION_SERVICE_API     |   string, url   | Url for the third party service that provides location search |
+| WEATHER_SERVICE_API      |   string, url   | Url for the third party service that provides weather data    |
+| WEATHER_SERVICE_USERNAME |     string      | Username for login into weather data provider                 |
+| WEATHER_SERVICE_PASSWORD |     string      | Password for login into weather data provider                 |
+| REDIS_URL                |   string, url   | Url for connection to Redis                                   |

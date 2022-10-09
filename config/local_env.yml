@@ -2,3 +2,4 @@ LOCATION_SERVICE_API: "https://nominatim.openstreetmap.org/"
 WEATHER_SERVICE_API: "api.meteomatics.com/"
 WEATHER_SERVICE_USERNAME: "personal_kuvychka"
 WEATHER_SERVICE_PASSWORD: "PCH3v68cdv"
+REDIS_URL: 'redis://localhost:6379/'

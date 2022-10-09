@@ -6,7 +6,8 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
   describe '#show' do
     subject(:request_weather) { get :show, params: { address: address } }
 
-    let(:address) { 'Flower Mound, Texas, 75028' }
+    let(:address) { "#{FFaker::AddressUS.street_address}, #{FFaker::AddressUS.city}, #{zip_code}" }
+    let(:zip_code) { FFaker::AddressUS.zip_code }
     let(:location_service_instance) { double }
     let(:weather_service_instance) { double }
     let(:lat) { FFaker::Geolocation.lat }
@@ -20,6 +21,7 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
       allow(location_service_instance).to receive(:call).and_return([nil, lat, lon])
       allow(ThirdParty::Meteomatics::GetWeatherDataService).to receive(:new).and_return(weather_service_instance)
       allow(weather_service_instance).to receive(:call).and_return(weather_data)
+      allow(RedisCacheStore).to receive(:get).and_return(nil)
     end
 
     it 'has to be successful' do
@@ -27,8 +29,10 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
 
       expect(response).to be_successful
       expect(parsed[:data]).to eq(weather_data.data)
+      expect(parsed[:cached]).to be(false)
       expect(ThirdParty::OpenStreetMap::GetLocationService).to have_received(:new).with(address)
       expect(ThirdParty::Meteomatics::GetWeatherDataService).to have_received(:new).with(lat, lon)
+      expect(RedisCacheStore).to have_received(:get).with(zip_code)
     end
 
     context 'when address is empty' do
@@ -72,5 +76,19 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
       end
     end
 
+    context 'when have a stored data' do
+      before { allow(RedisCacheStore).to receive(:get).and_return(weather_data.data) }
+
+      it 'has to be successful' do
+        request_weather
+
+        expect(response).to be_successful
+        expect(parsed[:data]).to eq(weather_data.data)
+        expect(parsed[:cached]).to be(true)
+        expect(ThirdParty::OpenStreetMap::GetLocationService).to_not have_received(:new)
+        expect(ThirdParty::Meteomatics::GetWeatherDataService).to_not have_received(:new)
+        expect(RedisCacheStore).to have_received(:get).with(zip_code)
+      end
+    end
   end
 end

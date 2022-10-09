@@ -4,12 +4,11 @@ module Api
   module V1
     # Api controller for providing weather data
     class WeathersController < Api::BaseController
-      before_action :validate_address, only: :show
-      before_action :fetch_location, only: :show
-      before_action :fetch_weather, only: :show
+      before_action :validate_address, :check_cached_data, :fetch_location, :fetch_weather, only: :show
 
       def show
-        render json: { success: true, data: @weather_data.data }
+        RedisCacheStore.set_with_ttl(@zip, @weather_data.data, 15.seconds)
+        render json: { success: true, data: @weather_data.data, cached: false }
       end
 
       private
@@ -20,6 +19,13 @@ module Api
         end
 
         @zip = params['address'].split(',').last.gsub(/\s+/, '')
+      end
+
+      def check_cached_data
+        data = RedisCacheStore.get(@zip)
+        return unless data.present?
+
+        render json: { success: true, data: data, cached: true }
       end
 
       def fetch_location

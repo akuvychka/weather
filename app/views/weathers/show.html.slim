@@ -25,7 +25,12 @@ javascript:
                     document.getElementById('humidity').innerHTML = `${data.data['relative_humidity_2m:p']}%`;
                     document.getElementById('wind-speed').innerHTML = `${data.data['wind_speed_2m:mph']}mph`;
                     document.getElementById('wind-direction').style.transform = `rotate(${data.data['wind_dir_2m:d']}deg)`;
-
+                    document.getElementById('address-text').innerHTML = address;
+                    let cached = document.getElementById('cached-block');
+                    cached.classList.remove('badge-secondary');
+                    cached.classList.remove('badge-success');
+                    cached.classList.add(data.cached ? 'badge-secondary' : 'badge-success');
+                    cached.innerHTML = data.cached ? 'Cached' : 'Live';
 
                     weatherForm.style.display = 'block';
                     errorForm.style.display = 'none';
@@ -55,10 +60,12 @@ div class="d-flex flex-column justify-content-center align-items-center mt-5"
       div.text-sm-left.text-danger
         | *Keep attention that ZipCode is mandatory for input
   div class="card mb-3 weather" style="min-width:600px; max-width: 800px; display:none" id='weather-form'
-    div class="card-header text-center"
+    div class="card-header text-center d-flex justify-content-between"
       .w-100.d-flex.font-weight-bold
         | Weather for location:
         #address-text.ml-1.font-weight-light.font-italic Flow
+      #cached-block.badge.badge-pill.text-center style='height: fit-content'
+        | Cached
     .card-body.d-flex
       .card.mr-1
         div class="card-header text-center" Temperature

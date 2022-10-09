@@ -7,7 +7,7 @@ module Api
       before_action :validate_address, :check_cached_data, :fetch_location, :fetch_weather, only: :show
 
       def show
-        RedisCacheStore.set_with_ttl(@zip, @weather_data.data, 15.seconds)
+        RedisCacheStore.set_with_ttl(@zip, @weather_data.data)
         render json: { success: true, data: @weather_data.data, cached: false }
       end
 

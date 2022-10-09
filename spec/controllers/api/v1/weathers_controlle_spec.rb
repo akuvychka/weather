@@ -22,6 +22,7 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
       allow(ThirdParty::Meteomatics::GetWeatherDataService).to receive(:new).and_return(weather_service_instance)
       allow(weather_service_instance).to receive(:call).and_return(weather_data)
       allow(RedisCacheStore).to receive(:get).and_return(nil)
+      allow(RedisCacheStore).to receive(:set_with_ttl).and_return('OK')
     end
 
     it 'has to be successful' do
@@ -33,6 +34,7 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
       expect(ThirdParty::OpenStreetMap::GetLocationService).to have_received(:new).with(address)
       expect(ThirdParty::Meteomatics::GetWeatherDataService).to have_received(:new).with(lat, lon)
       expect(RedisCacheStore).to have_received(:get).with(zip_code)
+      expect(RedisCacheStore).to have_received(:set_with_ttl).with(zip_code, weather_data.data)
     end
 
     context 'when address is empty' do
@@ -44,6 +46,8 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
         expect(response).not_to be_successful
         expect(response.status).to eq(400)
         expect(parsed[:message]).to eq('Address is not valid')
+        expect(RedisCacheStore).to_not have_received(:set_with_ttl)
+        expect(ThirdParty::Meteomatics::GetWeatherDataService).to_not have_received(:new)
       end
     end
 
@@ -58,6 +62,8 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
         expect(response).not_to be_successful
         expect(response.status).to eq(404)
         expect(parsed[:message]).to eq(error_message)
+        expect(RedisCacheStore).to_not have_received(:set_with_ttl)
+        expect(ThirdParty::Meteomatics::GetWeatherDataService).to_not have_received(:new)
       end
     end
 
@@ -73,6 +79,7 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
         expect(response).not_to be_successful
         expect(response.status).to eq(500)
         expect(parsed[:message]).to eq(error_message)
+        expect(RedisCacheStore).to_not have_received(:set_with_ttl)
       end
     end
 
@@ -88,6 +95,7 @@ RSpec.describe Api::V1::WeathersController, type: :controller do
         expect(ThirdParty::OpenStreetMap::GetLocationService).to_not have_received(:new)
         expect(ThirdParty::Meteomatics::GetWeatherDataService).to_not have_received(:new)
         expect(RedisCacheStore).to have_received(:get).with(zip_code)
+        expect(RedisCacheStore).to_not have_received(:set_with_ttl)
       end
     end
   end
